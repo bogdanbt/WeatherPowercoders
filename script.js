@@ -138,9 +138,13 @@ async function getHourlyForecast(lat, lon) {
     const rain = data.hourly.precipitation_probability;
 
     const container = document.getElementById("hourly-forecast");
-    container.innerHTML = "";
+    container.innerHTML = ""; // очистим старое
 
-    for (let i = 0; i < 12; i++) {
+    const now = new Date();
+    let startIndex = data.hourly.time.findIndex((t) => new Date(t) > now);
+    if (startIndex === -1) startIndex = 0;
+
+    for (let i = startIndex; i < startIndex + 12; i++) {
       const time = new Date(hours[i]).toLocaleTimeString([], {
         hour: "2-digit",
         minute: "2-digit",
