@@ -1,3 +1,4 @@
+/* Базовая стилизация */
 body {
   font-family: Arial, sans-serif;
   background: #e0f7fa;
@@ -6,22 +7,42 @@ body {
   align-items: center;
   height: 100vh;
   margin: 0;
+  overflow: hidden;
+  position: relative;
+  color: #fff;
 }
 
+/* Видео-фон */
+video#bg-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  min-height: 100%;
+  z-index: -1;
+  object-fit: cover;
+}
+
+/* Контейнер погоды */
 .weather-container {
   text-align: center;
-  background: #ffffff;
+  background: rgba(0, 0, 0, 0.5); /* полупрозрачный фон */
   padding: 30px;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(5px);
+  max-width: 90%;
+  width: 500px;
 }
 
+/* Инпут и кнопка */
 input {
   padding: 10px;
   width: 200px;
   border-radius: 8px;
   border: 1px solid #ccc;
   margin-right: 10px;
+  font-size: 1em;
 }
 
 button {
@@ -31,12 +52,15 @@ button {
   color: white;
   border-radius: 8px;
   cursor: pointer;
+  font-size: 1em;
 }
 
 #weather-result {
   margin-top: 20px;
   font-size: 1.1em;
 }
+
+/* Часовой прогноз */
 .hourly-container {
   display: flex;
   flex-wrap: wrap;
@@ -46,11 +70,12 @@ button {
 }
 
 .hour-card {
-  background: #f0f0f0;
+  background: rgba(255, 255, 255, 0.85);
   padding: 12px;
   border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   width: 100px;
   text-align: center;
   font-size: 0.9em;
+  color: #000;
 }

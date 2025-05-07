@@ -65,12 +65,65 @@ async function getWeatherByCoords(lat, lon, locationName) {
       <strong>Humidity:</strong> ${humidityNow}% 💧
     `;
 
+    const weatherCondition = getWeatherCondition(
+      weather.temperature,
+      weather.windspeed,
+      humidityNow
+    );
+
+    const videoUrl = await getBackgroundVideoUrl(weatherCondition);
+    if (videoUrl) {
+      const bgVideo = document.getElementById("bg-video");
+      bgVideo.src = videoUrl;
+    }
+
     getHourlyForecast(lat, lon);
   } catch (error) {
     console.error("Weather fetch error:", error);
     document.getElementById("weather-result").innerText =
       "Could not fetch weather.";
   }
+}
+
+function getWeatherCondition(temp, wind, humidity) {
+  if (humidity > 80) return "rain";
+  if (wind > 25) return "wind";
+  if (temp > 30) return "heat";
+  if (temp < 10) return "snow";
+  return "sunny";
+}
+
+async function getBackgroundVideoUrl(searchQuery) {
+  const PEXELS_API_KEY =
+    "j9j04cv861PfKGJDiRCoUsyfk6GPA6xiYeRhHsYh7WWoOHqfn0EsSGWc";
+
+  try {
+    const response = await fetch(
+      `https://api.pexels.com/videos/search?query=${searchQuery}&per_page=1`,
+      {
+        headers: {
+          Authorization: PEXELS_API_KEY,
+        },
+      }
+    );
+
+    if (!response.ok) throw new Error("Failed to fetch from Pexels");
+
+    const data = await response.json();
+    const video = data.videos?.[0];
+
+    if (video && video.video_files?.length) {
+      const file =
+        video.video_files.find(
+          (v) => v.quality === "sd" && v.file_type === "video/mp4"
+        ) || video.video_files[0];
+      return file.link;
+    }
+  } catch (error) {
+    console.error("Video fetch error:", error);
+  }
+
+  return null;
 }
 
 async function getHourlyForecast(lat, lon) {
@@ -85,7 +138,7 @@ async function getHourlyForecast(lat, lon) {
     const rain = data.hourly.precipitation_probability;
 
     const container = document.getElementById("hourly-forecast");
-    container.innerHTML = ""; // очистим старое
+    container.innerHTML = "";
 
     for (let i = 0; i < 12; i++) {
       const time = new Date(hours[i]).toLocaleTimeString([], {

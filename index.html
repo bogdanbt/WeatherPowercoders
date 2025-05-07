@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <!-- 🎥 Фоновое видео -->
+    <video id="bg-video" autoplay muted loop playsinline></video>
+
     <div class="weather-container">
       <h1>🌤️ Weather App</h1>
       <input
@@ -15,9 +18,11 @@
         placeholder="Enter city (e.g., London)"
       />
       <button onclick="getWeather()">Get Weather</button>
+
       <div id="weather-result"></div>
       <div id="hourly-forecast" class="hourly-container"></div>
     </div>
+
     <script src="script.js"></script>
   </body>
 </html>
