@@ -1,32 +1,35 @@
-async function getWeather() {
-  const city = document.getElementById("city-input").value;
-  if (!city) return alert("Please enter a city");
+window.onload = () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(successLocation, errorLocation);
+  } else {
+    console.log("Geolocation is not supported.");
+  }
+};
 
-  const geocodeUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${city}`;
+async function successLocation(position) {
+  const latitude = position.coords.latitude;
+  const longitude = position.coords.longitude;
+
+  const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`;
 
   try {
-    const geoRes = await fetch(geocodeUrl);
-    const geoData = await geoRes.json();
-    const location = geoData.results?.[0];
-    if (!location) {
-      document.getElementById("weather-result").innerText = "City not found!";
-      return;
-    }
-
-    const { latitude, longitude } = location;
-
-    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`;
     const weatherRes = await fetch(weatherUrl);
     const weatherData = await weatherRes.json();
-
     const weather = weatherData.current_weather;
+
     document.getElementById("weather-result").innerHTML = `
+        <strong>Location:</strong> Your current location<br/>
         <strong>Temperature:</strong> ${weather.temperature}°C<br/>
         <strong>Wind Speed:</strong> ${weather.windspeed} km/h
       `;
   } catch (error) {
-    console.error(error);
     document.getElementById("weather-result").innerText =
-      "Error fetching weather data.";
+      "Could not fetch weather for your location.";
   }
+}
+
+function errorLocation() {
+  console.log("User denied geolocation or an error occurred.");
+  document.getElementById("weather-result").innerText =
+    "Please enter a city above to get weather data.";
 }
